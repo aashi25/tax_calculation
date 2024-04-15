@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Calculator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    input[type="number"], select {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .error-icon {
+        display: none;
+        float: right;
+        position: relative;
+        top: -40px;
+        right: 10px;
+        cursor: pointer;
+    }
+    .error-icon:hover + .tooltip {
+        display: block;
+    }
+    .tooltip {
+        display: none;
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        top: -30px;
+        right: -10px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Tax Calculator</h2>
+    <label for="age">Select your age:</label>
+    <select id="age">
+        <option value="<40">&lt; 40</option>
+        <option value="40-60">&ge; 40 &lt; 60</option>
+        <option value=">=60">&ge; 60</option>
+    </select>
+    <label for="income">Enter your income:</label>
+    <input type="number" id="income" placeholder="Enter your income">
+    <span class="error-icon" title="Invalid input!">&#9888;</span>
+    <div class="tooltip">Invalid input!</div><br>
+    <label for="extra-income">Enter any extra income:</label>
+    <input type="number" id="extra-income" placeholder="Enter extra income">
+    <span class="error-icon" title="Invalid input!">&#9888;</span>
+    <div class="tooltip">Invalid input!</div><br>
+    <label for="deductions">Enter deductions:</label>
+    <input type="number" id="deductions" placeholder="Enter deductions">
+    <span class="error-icon" title="Invalid input!">&#9888;</span>
+    <div class="tooltip">Invalid input!</div><br>
+    <button onclick="calculateTax()">Calculate Tax</button>
+    <div id="taxResult"></div>
+</div>
+
+<script>
+function calculateTax() {
+    var age = document.getElementById("age").value;
+    var income = parseFloat(document.getElementById("income").value);
+    var extraIncome = parseFloat(document.getElementById("extra-income").value);
+    var deductions = parseFloat(document.getElementById("deductions").value);
+
+    var errorIcons = document.querySelectorAll(".error-icon");
+    var isValid = true;
+
+    errorIcons.forEach(function(icon) {
+        icon.style.display = "none";
+    });
+
+    if (isNaN(income) || isNaN(extraIncome) || isNaN(deductions)) {
+        errorIcons.forEach(function(icon) {
+            icon.style.display = "inline-block";
+        });
+        return;
+    }
+
+    var grossIncome = income + extraIncome - deductions;
+    var tax = 0;
+
+    if (grossIncome > 800000) {
+        switch (age) {
+            case "<40":
+                tax = (grossIncome - 800000) * 0.3;
+                break;
+            case "40-60":
+                tax = (grossIncome - 800000) * 0.4;
+                break;
+            case ">=60":
+                tax = (grossIncome - 800000) * 0.1;
+                break;
+        }
+    }
+
+    var taxResultElement = document.getElementById("taxResult");
+    taxResultElement.innerHTML = "<h3>Tax Calculation Result</h3>" +
+                                "<p>Gross Annual Income: ₹" + grossIncome.toFixed(2) + "</p>" +
+                                "<p>Tax to be paid: ₹" + tax.toFixed(2) + "</p>";
+}
+</script>
+</body>
+</html>
